@@ -182,3 +182,50 @@ void Simulation::PrintProbes(std::ostream& os)
 	}
 		
 }
+
+//Optimized json output function
+void Simulation::WriteJsonOutput(std::ostream& os) const {
+	os << "onJsonp({\"circuit\":{\"gates\":[";
+	bool firstGate = true;
+
+	for (auto* gate: m_circuit->GetGates()) {
+
+		if (!firstGate) {
+			os << ",";
+		}
+		os << "{";
+		os << "\"id\":\"" << gate->GetName() << "\",";
+		os << "\"table\":\"" << gate->GetTruthTableName() << "\",";
+		os << "\"type\":\"" << gate->GetType() << "\",";
+		os << "\"probed\":\"" << (gate->IsProbed() ? "true" : "false") << "\",";
+		os << "\"inputs\":\"";
+		const auto& inputs = gate->GetInGates();
+		for (size_t i = 0; i < inputs.size(); ++i) {
+			os << inputs[i]->GetName();
+			if (i < inputs.size() - 1) {
+				os << ",";
+			}
+		}
+		os << "\",";
+		os << "\"outputs\":\"";
+		const auto& outputs = gate->GetOutGates();
+		for (size_t i = 0; i < outputs.size(); ++i) {
+			os << outputs[i]->GetName();
+			if (i < outputs.size() - 1) {
+				os << ",";
+			}
+		}
+		os << "\"}";
+		firstGate = false;
+	}
+	os << "]},\"trace\":[";
+	bool firstProbe = true;
+	for (const auto& probe : m_probes) {
+		if (!firstProbe) {
+			os << ",";
+		}
+		os << "[\"" << probe.time << "\",\"" << probe.gateName << "\",\"" << probe.newValue << "\"]";
+		firstProbe = false;
+	}
+	os << "],\"layout\":\"" << m_layout << "\"});";
+}

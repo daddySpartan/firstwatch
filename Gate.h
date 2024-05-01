@@ -16,6 +16,15 @@ public:
 	int GetOutput() const noexcept { return m_output; }
 	void SetOutput(int value) noexcept { m_output = value; }
 	std::string GetName() const noexcept { return m_name; }
+	std::string GetType() const noexcept { return m_type->GetType(); }
+	std::string GetTruthTableName() const noexcept { return m_type->GetTruthTableName(); }
+	std::vector<Gate*> GetInGates() {
+		std::vector<Gate*> gates;
+		for (const auto& pair : m_inGates) {
+			gates.push_back(pair.second);
+		}
+		return gates;
+	}
 	std::vector<Gate*> GetOutGates() { return m_outGates; }
 	int GetTransitionOutput() const;
 	int GetTransitionTime(int time) const;

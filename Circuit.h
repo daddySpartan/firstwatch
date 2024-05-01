@@ -15,6 +15,13 @@ public:
 	void AddGate(std::string name, std::string typeName, std::vector<std::string> inputNames);
 	void AddProbe(std::string gateName);
 	Gate* GetGate(std::string gateName) { return &(m_gates[gateName]); }
+	std::vector<Gate*> GetGates() {
+		std::vector<Gate*> gates;
+		for (auto& pair : m_gates) {
+			gates.push_back(&pair.second);
+		}
+		return gates;
+	}
 	std::vector<Gate*> ProbeAllGates();
 	boost::property_tree::ptree GetJson();
 private:

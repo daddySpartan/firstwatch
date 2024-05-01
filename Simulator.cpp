@@ -29,14 +29,21 @@ int main(int argc, char** argv)
         
     simulation->Run();
     if (json)
-        simulation->UndoProbeAllGates();
-    if (argc >= 3 && "json" == std::string(argv[2]))
     {
-        boost::property_tree::ptree simResult = simulation->GetJson();
+        simulation->UndoProbeAllGates();
+
+        //boost::property_tree::ptree simResult = simulation->GetJson();
         std::ofstream output("circuit.jsonp", std::ios::out);
-        output << "onJsonp(";
-        boost::property_tree::write_json(output, simResult);
-        output << ");\n";
+ 
+        /*// Get the start time
+        auto start7= std::chrono::high_resolution_clock::now();*/
+        //boost::property_tree::write_json(output, simResult);
+		simulation->WriteJsonOutput(output);
+        /*// Get the end time
+        auto end7 = std::chrono::high_resolution_clock::now();
+        // Calculate the duration
+        auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(end7 - start7).count();
+        std::cout << "Function: write to json file " << "Time taken: " << duration7 << " milliseconds" << std::endl;*/
     }
     simulation->PrintProbes(std::cout);
 }
