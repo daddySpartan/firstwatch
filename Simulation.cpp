@@ -9,6 +9,9 @@
 #include "Simulation.h"
 #include "PriorityQueue.h"
 
+//#include <chrono>
+//#include <iostream>
+
 int Transition::GlobalId = 0;
 
 void Transition::Apply()
@@ -44,7 +47,7 @@ void Simulation::AddTransition(std::string gateName, int outputValue, int output
 std::unique_ptr<Simulation> Simulation::FromFile(std::ifstream& is)
 {
 	auto simulation = std::make_unique<Simulation>();
-	auto* circut = simulation->GetCircut();
+	auto* circuit = simulation->GetCircuit();
 	for (;;)
 	{
 		boost::char_separator<char> sep(" ");
@@ -61,26 +64,26 @@ std::unique_ptr<Simulation> Simulation::FromFile(std::ifstream& is)
 			std::vector<int> outputs;
 			for (size_t i = 2; i < command.size(); ++i)
 				outputs.emplace_back(std::stoi(command[i]));
-			circut->AddTruthTable(command[1], outputs);
+			circuit->AddTruthTable(command[1], outputs);
 		}
 		else if (command[0] == "type")
 		{
 			if (command.size() != 4)
 				throw std::runtime_error("Invalid number of arguments for gate type");
-			circut->AddGateType(command[1], command[2], std::stoi(command[3]));
+			circuit->AddGateType(command[1], command[2], std::stoi(command[3]));
 		}
 		else if (command[0] == "gate")
 		{
 			std::vector<std::string> inputs;
 			for (size_t i = 3; i < command.size(); ++i)
 				inputs.emplace_back(command[i]);
-			circut->AddGate(command[1], command[2], inputs);
+			circuit->AddGate(command[1], command[2], inputs);
 		}
 		else if (command[0] == "probe")
 		{
 			if (command.size() != 2)
 				throw std::runtime_error("Invalid number of arguments for probe type");
-			circut->AddProbe(command[1]);
+			circuit->AddProbe(command[1]);
 		}
 		else if (command[0] == "flip")
 		{
@@ -118,6 +121,7 @@ int Simulation::Step()
 {
 	int stepTime = m_queue.min()->time;
 	std::vector<Transition> transitions;
+
 	while (m_queue.len() > 0 && m_queue.min()->time == stepTime)
 	{
 		auto transition = m_queue.pop();
@@ -128,8 +132,8 @@ int Simulation::Step()
 			m_probes.emplace_back(Probe{ transition->time, transition->gate->GetName(), transition->newOutput });
 		transitions.emplace_back(*transition);
 	}
-
-	for (const auto transition : transitions)
+	
+	for (const auto& transition : transitions) // using reference to avoid copying
 	{
 		for (auto* gate : transition.gate->GetOutGates())
 		{
@@ -138,16 +142,20 @@ int Simulation::Step()
 			m_queue.append(Transition(gate, output, time));
 		}
 	}
+
 	return stepTime;
 }
 
 void Simulation::Run()
 {
 	std::sort(m_inTransitions.begin(), m_inTransitions.end());
+
 	for (const auto& t : m_inTransitions)
 		m_queue.append(t);
+
 	while (m_queue.len() > 0)
 		Step();
+
 	std::sort(m_probes.begin(), m_probes.end());
 }
 

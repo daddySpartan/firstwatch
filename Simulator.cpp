@@ -7,6 +7,9 @@
 
 #include "Simulation.h"
 
+/*//uncomment to check execution speed for optimization exercise
+#include <chrono>*/
+
 int main(int argc, char** argv)
 {
     if (argc < 2)
@@ -17,17 +20,25 @@ int main(int argc, char** argv)
     }
     bool json = (argc >= 3 && "json" == std::string(argv[2]));
     std::ifstream input(argv[1], std::ios::in);
+	if (!input.is_open())
+	{
+		std::cout << "Could not open file " << argv[1] << std::endl;
+		exit(1);
+	}   
+
     auto simulation = Simulation::FromFile(input);
-    
-    if (json)
-    {
-        simulation->LayoutFromFile(input);
-        // probe all gates should only be executed when 
-        // json output is on 
-        simulation->ProbeAllGates();
-    }
-        
+    simulation->LayoutFromFile(input);   
+    simulation->ProbeAllGates();      
+
+    /*// Get the start time
+    auto start4 = std::chrono::high_resolution_clock::now();*/
     simulation->Run();
+    /*// Get the end time
+    auto end4 = std::chrono::high_resolution_clock::now();
+    // Calculate the duration
+    auto duration4 = std::chrono::duration_cast<std::chrono::milliseconds>(end4 - start4).count();
+    std::cout << "Function: Simulation::Run " << "Time taken: " << duration4 << " milliseconds" << std::endl;*/
+
     if (json)
     {
         simulation->UndoProbeAllGates();
@@ -46,4 +57,4 @@ int main(int argc, char** argv)
         std::cout << "Function: write to json file " << "Time taken: " << duration7 << " milliseconds" << std::endl;*/
     }
     simulation->PrintProbes(std::cout);
-}
+ }
