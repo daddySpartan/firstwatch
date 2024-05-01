@@ -1,48 +1,39 @@
 #pragma once
-#include <vector>
+#include <queue>
 #include <optional>
+#include <vector>
 
-template <typename T>
-class PriorityQueue
-{
-public:
-    std::optional<T> min() 
-    { 
-        if (len() == 0) 
-            return std::nullopt; 
-        FindMin();
-        return m_queue[m_minIndex.value()];
-    }
-    std::optional<T> pop()
-    {
-        if (len() == 0)
-            return std::nullopt;
-        T ret = m_queue[m_minIndex.value()];
-        m_queue.erase(m_queue.begin() + m_minIndex.value());
-        m_minIndex = std::nullopt;
-        return ret;
-    }
-    void FindMin()
-    {
-        if (m_minIndex.has_value())
-            return;
-        auto min = m_queue[0];
-        m_minIndex = 0;
-        for (int i = 1; i < m_queue.size(); ++i)
-        {
-            auto val = m_queue[i];
-            if (val < min)
-            {
-                min = val;
-                m_minIndex = i;
-            }
-        }
-    }
-    size_t len() const noexcept { return m_queue.size(); }
-    void append(const T& item) { m_queue.emplace_back(item); m_minIndex = std::nullopt; }
-    
-private:
-    std::vector<T> m_queue;
-    std::optional<int> m_minIndex{};
+// Optimized priority queue functionality using std::priority_queue binary heap method
+struct Transition;
+struct CompareTransition {
+    bool operator()(const Transition& t1, const Transition& t2) const;
 };
 
+template <typename T>
+class PriorityQueue {
+public:
+    std::optional<T> min() const {
+        if (len() == 0)
+            return std::nullopt;
+        return m_queue.top();
+    }
+
+    std::optional<T> pop() {
+        if (len() == 0)
+            return std::nullopt;
+        T minElement = m_queue.top();
+        m_queue.pop();
+        return minElement;
+    }
+
+    void append(const T& item) {
+        m_queue.push(item);
+    }
+
+    size_t len() const noexcept {
+        return m_queue.size();
+    }
+
+private:
+    std::priority_queue<T, std::vector<T>, CompareTransition> m_queue;
+};
