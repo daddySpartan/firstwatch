@@ -42,6 +42,7 @@ class Simulation
 public:
 	Simulation() : m_circuit(new Circuit()) {};
 	static std::unique_ptr<Simulation> FromFile(std::ifstream& is);
+	static std::string filter(char c);
 	void LayoutFromFile(std::ifstream& is);
 	void AddTransition(std::string gateName, int outputValue, int outputTime);
 	Circuit* GetCircuit() { return m_circuit.get(); }

@@ -98,6 +98,16 @@ std::unique_ptr<Simulation> Simulation::FromFile(std::ifstream& is)
 	return simulation;
 }
 
+std::string Simulation::filter(char c)
+{
+	if (c == '\n') return "\\n";
+	if (c == '\t') return "\\t";
+	if (c == '\"') return "\\\"";
+	if (c == '/') return "\\/";
+	//etc
+	else return std::string(1, c);
+}
+
 void Simulation::LayoutFromFile(std::ifstream& is)
 {
 	std::string temp;
@@ -235,5 +245,8 @@ void Simulation::WriteJsonOutput(std::ostream& os) const {
 		os << "[\"" << probe.time << "\",\"" << probe.gateName << "\",\"" << probe.newValue << "\"]";
 		firstProbe = false;
 	}
-	os << "],\"layout\":\"" << m_layout << "\"});";
+
+	os << "],\"layout\":\"";
+	std::transform(std::begin(m_layout), std::end(m_layout), std::ostream_iterator<std::string>(os), Simulation::filter);
+	os << "\"});";
 }
