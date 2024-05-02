@@ -23,7 +23,10 @@ std::cout << "Function: Simulation::Method Name " << "Time taken: " << duration 
 ```
 
 The test file used was 5devadas13.in as it was already mentioned this takes a long time to produce an output. It was found that the 2 longest execution was from the methods Simulation::Run and boost::property_tree::write_json.
-The 2 methods were targeted for optimization and the resulting improvement achieved was greater than 90%.
+The 2 methods were targeted for optimization and the resulting improvement achieved was greater than 90% as can be seen in the table below.
+
+![image](https://github.com/daddySpartan/firstwatch/assets/93863445/44ba41bd-2232-414e-b7c0-68c28746b086)
+
 
 ## Changes Done
 | Commit| Description|
