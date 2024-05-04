@@ -36,3 +36,4 @@ The 2 methods were targeted for optimization and the resulting improvement achie
 | [7ebbc8](https://github.com/daddySpartan/firstwatch/commit/7ebbc8759253e12540c16d854f09296bf88680f6) | optimize simulation by changing json output format removing whitespaces and propertytree library|
 | [ce281f](https://github.com/daddySpartan/firstwatch/commit/ce281f3846f5c66bf06aefb44e09a48bdeedd655) | minor code cleanup including command line fixes|
 | [0bebd9](https://github.com/daddySpartan/firstwatch/commit/0bebd92083e01305cb2e6d82640ae8b805eb4347) | added output string filter to keep escape characters intact in case required by visualizer| 
+| [37f310](https://github.com/daddySpartan/firstwatch/commit/37f3104a47181ebce2f80f57569f41b2fdba1dde) | just had time to figure out on how to use and do tests on the visualizer and found json input and output gates to be malformed - bug fix on json output formatting|
