@@ -216,24 +216,26 @@ void Simulation::WriteJsonOutput(std::ostream& os) const {
 		os << "\"table\":\"" << gate->GetTruthTableName() << "\",";
 		os << "\"type\":\"" << gate->GetType() << "\",";
 		os << "\"probed\":\"" << (gate->IsProbed() ? "true" : "false") << "\",";
-		os << "\"inputs\":\"";
-		const auto& inputs = gate->GetInGates();
-		for (size_t i = 0; i < inputs.size(); ++i) {
-			os << inputs[i]->GetName();
-			if (i < inputs.size() - 1) {
-				os << ",";
-			}
-		}
-		os << "\",";
-		os << "\"outputs\":\"";
-		const auto& outputs = gate->GetOutGates();
-		for (size_t i = 0; i < outputs.size(); ++i) {
-			os << outputs[i]->GetName();
-			if (i < outputs.size() - 1) {
-				os << ",";
-			}
-		}
-		os << "\"}";
+		os << "\"inputs\":["; 
+		
+		bool firstInput = true;
+        for (const auto& input : gate->GetInGates()) {
+            if (!firstInput) {
+                os << ",";
+            }
+            os << "\"" << input->GetName() << "\"";
+            firstInput = false;
+        }
+		os << "],\"outputs\":[";
+        bool firstOutput = true;
+        for (const auto& output : gate->GetOutGates()) {
+            if (!firstOutput) {
+                os << ",";
+            }
+            os << "\"" << output->GetName() << "\"";
+            firstOutput = false;
+        }
+        os << "]}";
 		firstGate = false;
 	}
 	os << "]},\"trace\":[";
